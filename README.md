@@ -2,6 +2,62 @@
 
 A complete HR help desk web application for HR employees to manage employee requests and tickets.
 
+## 🚀 Quick Start (SQLite - Easiest Setup)
+
+Want to run the app quickly without PostgreSQL? Use the automated startup scripts:
+
+### Option 1: Automated Setup (Recommended)
+
+**Linux/Mac:**
+```bash
+./start.sh
+```
+
+**Windows:**
+```cmd
+start.bat
+```
+
+The script will automatically:
+1. Install Python dependencies
+2. Configure SQLite database
+3. Create sample tickets
+4. Start both backend and frontend servers
+
+### Option 2: Manual Setup
+
+```bash
+# 1. Install Python dependencies
+cd backend
+pip install -r requirements.txt
+
+# 2. Set up environment for SQLite
+cat > ../.env << 'EOF'
+SECRET_KEY=dev-secret-key
+DATABASE_TYPE=sqlite
+DATABASE_NAME=hr_helpdesk
+FLASK_ENV=development
+EOF
+
+# 3. Create sample data
+python populate_db.py
+
+# 4. Start the backend server (in one terminal)
+python app.py
+
+# 5. In a NEW terminal, start the frontend server
+cd ../frontend
+python -m http.server 8080
+```
+
+**Open your browser:**
+- 📝 Submit tickets: http://localhost:8080/index.html
+- 📊 View dashboard: http://localhost:8080/dashboard.html
+
+That's it! You now have a fully functional HR Help Desk system running locally.
+
+---
+
 ## Features
 
 - 📝 **Ticket Management**: Submit, view, update, and manage help desk tickets
@@ -16,7 +72,7 @@ A complete HR help desk web application for HR employees to manage employee requ
 
 - **Frontend**: HTML, CSS, JavaScript
 - **Backend**: Python with Flask framework
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL (production) or SQLite (development)
 - **API**: RESTful API with JSON responses
 
 ## Project Structure
