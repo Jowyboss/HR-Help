@@ -133,14 +133,25 @@ When everything is working, you have:
 
 ## How to View the Database?
 
+**📊 Complete Guide**: See [HOW_TO_VIEW_DATABASE.md](HOW_TO_VIEW_DATABASE.md) for all options!
+
 Your data is stored in: `backend/instance/hr_helpdesk.db`
 
-**Option 1: Visual Tool (Easiest)**
+**Quick Options:**
+
+**Option 1: Built-in Python Script (Easiest!)**
+```bash
+python view_database.py           # See everything
+python view_database.py stats     # Just statistics
+python view_database.py tickets   # All tickets
+```
+
+**Option 2: Visual Tool**
 - Download [DB Browser for SQLite](https://sqlitebrowser.org/)
 - Open the file: `backend/instance/hr_helpdesk.db`
 - Browse the `tickets` and `comments` tables
 
-**Option 2: Command Line**
+**Option 3: Command Line**
 ```bash
 cd backend/instance
 sqlite3 hr_helpdesk.db

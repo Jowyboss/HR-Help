@@ -4,6 +4,8 @@ A complete HR help desk web application for HR employees to manage employee requ
 
 > **❓ New here? See [QUICKSTART.md](QUICKSTART.md) for the simplest setup instructions!**
 > 
+> **📊 Want to view your data? See [HOW_TO_VIEW_DATABASE.md](HOW_TO_VIEW_DATABASE.md) - answers "Do I use SQLite, PostgreSQL, or Workbench?"**
+> 
 > **🤔 Have questions? Check [FAQ.md](FAQ.md) - especially "Do I need to run schema.sql for SQLite?"**
 
 ## 🚀 Quick Start (SQLite - Easiest Setup)
