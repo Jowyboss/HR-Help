@@ -245,6 +245,30 @@ Then access:
 3. Enter your name and comment
 4. Click "Add Comment"
 
+## Database
+
+### Where is the Data Stored?
+
+- **SQLite (Development)**: `backend/instance/hr_helpdesk.db` - A single file database
+- **PostgreSQL (Production)**: On your PostgreSQL server
+
+### How to View the Database
+
+See the **[DATABASE.md](DATABASE.md)** guide for detailed instructions on:
+- Viewing the database with visual tools (DB Browser, DBeaver, pgAdmin)
+- Using command-line tools (sqlite3, psql)
+- Running SQL queries
+- Exporting and backing up data
+
+**Quick view with SQLite command line:**
+```bash
+cd backend/instance
+sqlite3 hr_helpdesk.db
+.tables              # List tables
+SELECT * FROM tickets;    # View all tickets
+.quit
+```
+
 ## Database Schema
 
 ### Tickets Table

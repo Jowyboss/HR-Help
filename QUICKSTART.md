@@ -114,9 +114,34 @@ When everything is working, you have:
    - Serves the HTML/CSS/JavaScript files
    - Provides the user interface
 
-3. **Database** (SQLite file: `backend/hr_helpdesk.db`)
+3. **Database** (SQLite file: `backend/instance/hr_helpdesk.db`)
    - Stores all tickets and comments
    - Pre-loaded with sample data
+
+---
+
+## How to View the Database?
+
+Your data is stored in: `backend/instance/hr_helpdesk.db`
+
+**Option 1: Visual Tool (Easiest)**
+- Download [DB Browser for SQLite](https://sqlitebrowser.org/)
+- Open the file: `backend/instance/hr_helpdesk.db`
+- Browse the `tickets` and `comments` tables
+
+**Option 2: Command Line**
+```bash
+cd backend/instance
+sqlite3 hr_helpdesk.db
+SELECT * FROM tickets;
+.quit
+```
+
+**Option 3: See [DATABASE.md](DATABASE.md)** for complete guide including:
+- Different database viewers
+- SQL queries to run
+- How to export/backup data
+- Switching to PostgreSQL
 
 ---
 
