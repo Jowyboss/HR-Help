@@ -2,6 +2,8 @@
 
 A complete HR help desk web application for HR employees to manage employee requests and tickets.
 
+> **❓ New here? See [QUICKSTART.md](QUICKSTART.md) for the simplest setup instructions!**
+
 ## 🚀 Quick Start (SQLite - Easiest Setup)
 
 Want to run the app quickly without PostgreSQL? Use the automated startup scripts:
@@ -288,25 +290,58 @@ Then access:
 
 ## Troubleshooting
 
+### Quick Fixes for Common Issues
+
+#### "How do I run it?"
+Use the automated startup scripts:
+- **Linux/Mac**: Run `./start.sh`
+- **Windows**: Double-click `start.bat`
+
+Or follow the Quick Start guide at the top of this README.
+
+#### Application doesn't load / "Connection refused"
+1. Make sure both servers are running:
+   - Backend: `cd backend && python app.py` (runs on port 5000)
+   - Frontend: `cd frontend && python -m http.server 8080` (runs on port 8080)
+2. Check that you're accessing the correct URL: `http://localhost:8080/dashboard.html`
+3. Don't open HTML files directly (file://...) - use the web server
+
+#### No tickets showing in dashboard
+1. Make sure the backend server is running
+2. Run `python backend/populate_db.py` to create sample data
+3. Check browser console (F12) for errors
+4. Verify the API is working: Visit `http://localhost:5000/api/tickets` directly
+
+#### Database errors
+**Using SQLite (recommended for testing):**
+- Delete `backend/hr_helpdesk.db` and run `python backend/populate_db.py` again
+
+**Using PostgreSQL:**
+- Verify PostgreSQL is running: `sudo service postgresql status`
+- Check credentials in your `.env` file
+- Recreate database: `psql -U postgres -d hr_helpdesk -f backend/database/schema.sql`
+
 ### CORS Issues
 
 If you encounter CORS issues when accessing the API from the frontend, ensure:
-1. Flask-CORS is properly installed
+1. Flask-CORS is properly installed (`pip install -r backend/requirements.txt`)
 2. The backend is running on `http://localhost:5000`
 3. The frontend is served from a web server (not opened directly as a file)
-
-### Database Connection Issues
-
-If you can't connect to the database:
-1. Verify PostgreSQL is running
-2. Check your `.env` file has correct credentials
-3. Ensure the database exists and schema is loaded
 
 ### Port Already in Use
 
 If port 5000 or 8080 is already in use:
-1. Stop the process using that port
+1. Find and stop the process using that port:
+   - Linux/Mac: `lsof -ti:5000 | xargs kill` or `lsof -ti:8080 | xargs kill`
+   - Windows: `netstat -ano | findstr :5000` then `taskkill /PID <PID> /F`
 2. Or modify the port in `backend/app.py` and `frontend/js/app.js`
+
+### Python module errors
+If you get "ModuleNotFoundError":
+```bash
+cd backend
+pip install -r requirements.txt
+```
 
 ## License
 
