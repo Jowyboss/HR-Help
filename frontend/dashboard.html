@@ -17,6 +17,9 @@
         </header>
 
         <main>
+            <!-- Server Status Indicator -->
+            <div id="serverStatus" class="message hidden"></div>
+            
             <div class="dashboard">
                 <div class="dashboard-header">
                     <h2>Ticket Dashboard</h2>
@@ -159,8 +162,25 @@
 
         // Load tickets on page load
         document.addEventListener('DOMContentLoaded', async () => {
+            await checkConnection();
             await loadDashboard();
         });
+        
+        // Check server connection
+        async function checkConnection() {
+            const statusEl = document.getElementById('serverStatus');
+            const isConnected = await checkServerConnection();
+            
+            if (!isConnected) {
+                statusEl.innerHTML = `
+                    <strong>⚠️ Backend Server Not Running</strong><br>
+                    Cannot load tickets. Please start the backend server.<br>
+                    Run: <code>cd backend && python app.py</code> or use <code>./start.sh</code>
+                `;
+                statusEl.className = 'message error';
+                statusEl.classList.remove('hidden');
+            }
+        }
 
         async function loadDashboard() {
             try {

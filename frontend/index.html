@@ -17,6 +17,9 @@
         </header>
 
         <main>
+            <!-- Server Status Indicator -->
+            <div id="serverStatus" class="message hidden"></div>
+            
             <div class="card">
                 <h2>Submit a New Help Desk Ticket</h2>
                 <p class="subtitle">Fill out the form below to submit your request to the HR team.</p>
@@ -84,9 +87,48 @@
 
     <script src="js/app.js"></script>
     <script>
+        // Check server connection on page load
+        async function checkConnection() {
+            const statusEl = document.getElementById('serverStatus');
+            const isConnected = await checkServerConnection();
+            
+            if (!isConnected) {
+                statusEl.innerHTML = `
+                    <strong>⚠️ Backend Server Not Running</strong><br>
+                    Please start the backend server to submit tickets.<br>
+                    Run: <code>cd backend && python app.py</code><br>
+                    Or use the startup script: <code>./start.sh</code> (Linux/Mac) or <code>start.bat</code> (Windows)
+                `;
+                statusEl.className = 'message error';
+                statusEl.classList.remove('hidden');
+            } else {
+                statusEl.innerHTML = '✓ Connected to backend server';
+                statusEl.className = 'message success';
+                statusEl.classList.remove('hidden');
+                // Auto-hide success message after 3 seconds
+                setTimeout(() => {
+                    statusEl.classList.add('hidden');
+                }, 3000);
+            }
+        }
+        
+        // Check connection when page loads
+        document.addEventListener('DOMContentLoaded', checkConnection);
+        
         // Handle form submission
         document.getElementById('ticketForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Check connection before submitting
+            const isConnected = await checkServerConnection();
+            if (!isConnected) {
+                showMessage(
+                    'Cannot connect to server. Please ensure the backend is running.\n' +
+                    'See the red message above for instructions.',
+                    'error'
+                );
+                return;
+            }
             
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData);

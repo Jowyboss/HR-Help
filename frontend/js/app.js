@@ -24,7 +24,31 @@ async function apiRequest(endpoint, options = {}) {
         return await response.json();
     } catch (error) {
         console.error('API request failed:', error);
+        
+        // Provide more specific error messages
+        if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+            throw new Error(
+                'Cannot connect to the server. Please ensure:\n' +
+                '1. The backend server is running (python backend/app.py)\n' +
+                '2. The server is accessible at http://localhost:5000\n' +
+                '3. Check the browser console for more details'
+            );
+        }
+        
         throw error;
+    }
+}
+
+/**
+ * Check if the backend server is running
+ * @returns {Promise<boolean>} True if server is accessible
+ */
+async function checkServerConnection() {
+    try {
+        const response = await fetch('http://localhost:5000/', { method: 'GET' });
+        return response.ok;
+    } catch (error) {
+        return false;
     }
 }
 
