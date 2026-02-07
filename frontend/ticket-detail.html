@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Help Desk - Ticket Details</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎫 HR Help Desk</h1>
+            <nav>
+                <a href="index.html">Submit Ticket</a>
+                <a href="dashboard.html">View Dashboard</a>
+            </nav>
+        </header>
+
+        <main>
+            <div id="loadingMessage" class="loading">Loading ticket details...</div>
+            <div id="errorMessage" class="message error hidden"></div>
+
+            <div id="ticketDetail" class="ticket-detail hidden">
+                <!-- Ticket Header -->
+                <div class="ticket-header">
+                    <div>
+                        <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+                        <h2 id="ticketSubject"></h2>
+                        <div class="ticket-meta">
+                            <span class="ticket-id" id="ticketId"></span>
+                            <span class="ticket-date" id="ticketDate"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ticket Information -->
+                <div class="card">
+                    <div class="ticket-info-grid">
+                        <div class="info-item">
+                            <label>Employee Name</label>
+                            <div id="employeeName"></div>
+                        </div>
+                        <div class="info-item">
+                            <label>Email</label>
+                            <div id="employeeEmail"></div>
+                        </div>
+                        <div class="info-item">
+                            <label>Category</label>
+                            <div id="ticketCategory"></div>
+                        </div>
+                        <div class="info-item">
+                            <label>Priority</label>
+                            <div id="ticketPriority"></div>
+                        </div>
+                        <div class="info-item">
+                            <label>Status</label>
+                            <div id="ticketStatus"></div>
+                        </div>
+                        <div class="info-item">
+                            <label>Assigned To</label>
+                            <div id="ticketAssignedTo"></div>
+                        </div>
+                    </div>
+
+                    <div class="description-section">
+                        <label>Description</label>
+                        <div id="ticketDescription" class="ticket-description"></div>
+                    </div>
+                </div>
+
+                <!-- Update Ticket Form -->
+                <div class="card">
+                    <h3>Update Ticket</h3>
+                    <form id="updateForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="updateStatus">Status</label>
+                                <select id="updateStatus" name="status">
+                                    <option value="Open">Open</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Resolved">Resolved</option>
+                                    <option value="Closed">Closed</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="updateAssignedTo">Assign To</label>
+                                <input type="text" id="updateAssignedTo" name="assigned_to" 
+                                       placeholder="HR Staff Name">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Update Ticket</button>
+                        </div>
+                    </form>
+                    <div id="updateMessage" class="message hidden"></div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="card">
+                    <h3>💬 Comments</h3>
+                    
+                    <!-- Add Comment Form -->
+                    <div class="add-comment-section">
+                        <form id="commentForm">
+                            <div class="form-group">
+                                <label for="commentAuthor">Your Name</label>
+                                <input type="text" id="commentAuthor" name="author" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="commentText">Comment</label>
+                                <textarea id="commentText" name="comment_text" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Comment</button>
+                        </form>
+                        <div id="commentMessage" class="message hidden"></div>
+                    </div>
+
+                    <!-- Comments List -->
+                    <div id="commentsList" class="comments-list">
+                        <div class="no-comments">No comments yet</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 HR Help Desk. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        let currentTicketId = null;
+
+        // Load ticket on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Get ticket ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            currentTicketId = urlParams.get('id');
+
+            if (!currentTicketId) {
+                showError('No ticket ID provided');
+                return;
+            }
+
+            await loadTicketDetails();
+        });
+
+        async function loadTicketDetails() {
+            try {
+                document.getElementById('loadingMessage').style.display = 'block';
+                const result = await getTicketById(currentTicketId);
+                
+                if (result.success && result.ticket) {
+                    displayTicketDetails(result.ticket);
+                    document.getElementById('loadingMessage').style.display = 'none';
+                    document.getElementById('ticketDetail').classList.remove('hidden');
+                } else {
+                    throw new Error(result.error || 'Failed to load ticket');
+                }
+            } catch (error) {
+                document.getElementById('loadingMessage').style.display = 'none';
+                showError('Error loading ticket: ' + error.message);
+            }
+        }
+
+        function displayTicketDetails(ticket) {
+            document.getElementById('ticketSubject').textContent = ticket.subject;
+            document.getElementById('ticketId').textContent = `Ticket #${ticket.id}`;
+            document.getElementById('ticketDate').textContent = `Created: ${formatDate(ticket.created_at)}`;
+            
+            document.getElementById('employeeName').textContent = ticket.employee_name;
+            document.getElementById('employeeEmail').textContent = ticket.employee_email;
+            document.getElementById('ticketCategory').innerHTML = `<span class="badge badge-category">${ticket.category}</span>`;
+            document.getElementById('ticketPriority').innerHTML = `<span class="badge badge-priority-${ticket.priority.toLowerCase()}">${ticket.priority}</span>`;
+            document.getElementById('ticketStatus').innerHTML = `<span class="badge badge-status-${ticket.status.toLowerCase().replace(' ', '-')}">${ticket.status}</span>`;
+            document.getElementById('ticketAssignedTo').textContent = ticket.assigned_to || 'Unassigned';
+            document.getElementById('ticketDescription').textContent = ticket.description;
+
+            // Set form values
+            document.getElementById('updateStatus').value = ticket.status;
+            document.getElementById('updateAssignedTo').value = ticket.assigned_to || '';
+
+            // Display comments
+            displayComments(ticket.comments || []);
+        }
+
+        function displayComments(comments) {
+            const commentsList = document.getElementById('commentsList');
+            
+            if (comments.length === 0) {
+                commentsList.innerHTML = '<div class="no-comments">No comments yet</div>';
+                return;
+            }
+
+            commentsList.innerHTML = comments.map(comment => `
+                <div class="comment">
+                    <div class="comment-header">
+                        <strong>${escapeHtml(comment.author)}</strong>
+                        <span class="comment-date">${formatDate(comment.created_at)}</span>
+                    </div>
+                    <div class="comment-text">${escapeHtml(comment.comment_text)}</div>
+                </div>
+            `).join('');
+        }
+
+        // Handle update form submission
+        document.getElementById('updateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            try {
+                const result = await updateTicket(currentTicketId, data);
+                if (result.success) {
+                    showUpdateMessage('Ticket updated successfully!', 'success');
+                    await loadTicketDetails();
+                } else {
+                    showUpdateMessage('Error: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showUpdateMessage('Error updating ticket: ' + error.message, 'error');
+            }
+        });
+
+        // Handle comment form submission
+        document.getElementById('commentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            try {
+                const result = await addComment(currentTicketId, data);
+                if (result.success) {
+                    showCommentMessage('Comment added successfully!', 'success');
+                    e.target.reset();
+                    await loadTicketDetails();
+                } else {
+                    showCommentMessage('Error: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showCommentMessage('Error adding comment: ' + error.message, 'error');
+            }
+        });
+
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.classList.remove('hidden');
+        }
+
+        function showUpdateMessage(text, type) {
+            const messageEl = document.getElementById('updateMessage');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            messageEl.classList.remove('hidden');
+            setTimeout(() => messageEl.classList.add('hidden'), 3000);
+        }
+
+        function showCommentMessage(text, type) {
+            const messageEl = document.getElementById('commentMessage');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            messageEl.classList.remove('hidden');
+            setTimeout(() => messageEl.classList.add('hidden'), 3000);
+        }
+    </script>
+</body>
+</html>
