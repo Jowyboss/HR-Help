@@ -3,6 +3,8 @@
 A complete HR help desk web application for HR employees to manage employee requests and tickets.
 
 > **❓ New here? See [QUICKSTART.md](QUICKSTART.md) for the simplest setup instructions!**
+> 
+> **🤔 Have questions? Check [FAQ.md](FAQ.md) - especially "Do I need to run schema.sql for SQLite?"**
 
 ## 🚀 Quick Start (SQLite - Easiest Setup)
 
@@ -104,8 +106,8 @@ hr-helpdesk/
 ## Prerequisites
 
 - Python 3.8 or higher
-- PostgreSQL 12 or higher
 - pip (Python package installer)
+- **Optional**: PostgreSQL 12 or higher (for production use)
 
 ## Installation
 
@@ -116,7 +118,17 @@ git clone https://github.com/Jowyboss/HR-Help.git
 cd HR-Help
 ```
 
-### 2. Set Up PostgreSQL Database
+### 2. Choose Your Database
+
+You can use either SQLite (easier) or PostgreSQL (production):
+
+#### Option A: SQLite (Recommended for Development) ✓
+
+**No database setup needed!** Tables are created automatically.
+
+Skip to step 3 below.
+
+#### Option B: PostgreSQL (For Production)
 
 Create a new PostgreSQL database:
 
@@ -145,15 +157,26 @@ Copy the example environment file and update it with your settings:
 cp .env.example .env
 ```
 
-Edit `.env` and set your database credentials:
+Edit `.env` and configure for your chosen database:
 
+**For SQLite (recommended):**
 ```
 SECRET_KEY=your-secret-key-here
+DATABASE_TYPE=sqlite
+DATABASE_NAME=hr_helpdesk
+FLASK_ENV=development
+```
+
+**For PostgreSQL:**
+```
+SECRET_KEY=your-secret-key-here
+DATABASE_TYPE=postgresql
 DATABASE_HOST=localhost
 DATABASE_PORT=5432
 DATABASE_NAME=hr_helpdesk
 DATABASE_USER=postgres
 DATABASE_PASSWORD=your-password
+FLASK_ENV=development
 ```
 
 ### 4. Install Python Dependencies
@@ -161,6 +184,18 @@ DATABASE_PASSWORD=your-password
 ```bash
 cd backend
 pip install -r requirements.txt
+```
+
+### 5. Create Database Tables and Sample Data
+
+**For SQLite:** Tables are created automatically when you run this:
+```bash
+python populate_db.py
+```
+
+**For PostgreSQL:** This adds sample data (tables already created by schema.sql):
+```bash
+python populate_db.py
 ```
 
 ### 5. Run the Application

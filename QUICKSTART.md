@@ -1,5 +1,16 @@
 # 🚀 Quick Start Guide - HR Help Desk
 
+## ⚠️ Important: Do NOT Run schema.sql for SQLite!
+
+**If you're using SQLite (the default):**
+- ✅ Tables are created automatically
+- ❌ You do NOT need to run `schema.sql`
+- ✅ Just run the startup script or `python populate_db.py`
+
+**The `schema.sql` file is ONLY for PostgreSQL!**
+
+---
+
 ## The Absolute Easiest Way to Run This App
 
 ### For Linux/Mac Users:
@@ -12,7 +23,7 @@ Open a terminal and run:
 
 That's it! The script will:
 - ✅ Install all dependencies
-- ✅ Set up the database with sample data
+- ✅ Set up SQLite database with sample data (NO schema.sql needed!)
 - ✅ Start the backend server
 - ✅ Start the frontend server
 - ✅ Open your browser automatically

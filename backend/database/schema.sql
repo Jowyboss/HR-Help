@@ -1,4 +1,15 @@
 -- HR Help Desk Database Schema
+-- 
+-- ⚠️  IMPORTANT: This schema file is for PostgreSQL ONLY
+-- 
+-- If you're using SQLite (the default for development):
+--   - You DO NOT need to run this file
+--   - Tables are automatically created by Flask-SQLAlchemy
+--   - Just run: python populate_db.py
+--
+-- This file is only needed if you're setting up PostgreSQL:
+--   psql -U postgres -d hr_helpdesk -f backend/database/schema.sql
+--
 
 -- Drop tables if they exist
 DROP TABLE IF EXISTS comments CASCADE;

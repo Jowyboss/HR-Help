@@ -8,11 +8,72 @@ The application supports two database types:
 - **Location**: `backend/instance/hr_helpdesk.db`
 - **Type**: Single file database
 - **When configured**: When `.env` has `DATABASE_TYPE=sqlite`
+- **Setup**: Tables are created automatically - no SQL file needed!
 
 ### 2. PostgreSQL (Recommended for Production)
 - **Location**: PostgreSQL server (not a file)
 - **Type**: Client-server database
 - **When configured**: When `.env` has `DATABASE_TYPE=postgresql`
+- **Setup**: Requires running `schema.sql` file
+
+## ⚠️ Important: SQLite vs PostgreSQL Setup
+
+### Using SQLite (Recommended for Beginners)
+
+**You DO NOT need to run schema.sql!**
+
+SQLite tables are created automatically by Flask-SQLAlchemy when you:
+1. Configure `.env` with `DATABASE_TYPE=sqlite`
+2. Run the app or `python populate_db.py`
+
+The `backend/database/schema.sql` file is **ONLY for PostgreSQL**.
+
+**Quick Setup:**
+```bash
+# 1. Set up .env for SQLite
+cat > .env << 'EOF'
+DATABASE_TYPE=sqlite
+DATABASE_NAME=hr_helpdesk
+SECRET_KEY=dev-secret-key
+FLASK_ENV=development
+EOF
+
+# 2. Create tables and sample data (this is all you need!)
+cd backend
+python populate_db.py
+
+# Done! Your database is ready at backend/instance/hr_helpdesk.db
+```
+
+### Using PostgreSQL (Advanced)
+
+**You MUST run schema.sql for PostgreSQL**
+
+PostgreSQL requires the schema.sql file to set up tables:
+
+```bash
+# 1. Create PostgreSQL database
+psql -U postgres -c "CREATE DATABASE hr_helpdesk;"
+
+# 2. Run schema.sql to create tables
+psql -U postgres -d hr_helpdesk -f backend/database/schema.sql
+
+# 3. Configure .env for PostgreSQL
+cat > .env << 'EOF'
+DATABASE_TYPE=postgresql
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_NAME=hr_helpdesk
+DATABASE_USER=postgres
+DATABASE_PASSWORD=your-password
+SECRET_KEY=dev-secret-key
+FLASK_ENV=development
+EOF
+
+# 4. Optionally populate with sample data
+cd backend
+python populate_db.py
+```
 
 ## How to View the Database
 
